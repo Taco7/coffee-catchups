@@ -13,6 +13,10 @@ import (
 	"encoding/json"
 )
 
+var blkEmployee models.Employees
+var efrontEmployee models.Employees
+var meeting models.Meeting
+
 func main() {
 	loadData()
 	configureRoutes()
@@ -30,32 +34,24 @@ func configureRoutes(){
 
 func loadData(){
 	fmt.Println("reading blk employees")
-	var blkEmployee models.Employees
 	readFiles(&blkEmployee,"../../resources/blkEmployees.json")
-		fmt.Println("User Type: " + blkEmployee.Employee[0].EmployeeId)
 
-	fmt.Println("reading efront employees")
-	var efrontEmployee models.Employees
+	fmt.Println("reading efront employees")	
 	readFiles(&efrontEmployee,"../../resources/efrontEmployees.json")
-		fmt.Println("User Type: " + efrontEmployee.Employee[0].EmployeeId)
 
 	fmt.Println("reading meeting")
-	var meeting models.Meeting
 	readFiles(&meeting,"../../resources/meeting.json")
-		fmt.Println("User Type: " + meeting.MeetingInfo[0].EmployeeId)
-	
 }
 
 func readFiles(fileObject interface{}, filePath string) interface{} {
 	file, err := os.Open(filePath)
 	if err != nil {
-        log.Println(err)
+        log.Fatal(err)
 	}
 	byteValue, _ := ioutil.ReadAll(file)
 	json.Unmarshal(byteValue, &fileObject)
 	return fileObject
-		
-	}
+}
 	
 
 func Index(w http.ResponseWriter, r *http.Request) {
