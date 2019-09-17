@@ -1,0 +1,19 @@
+{
+	"adverma":{
+	"spokenTo":["rkhatri"],
+	"upcomingMeeting": 
+	[
+	{
+	"empid":"airaj",
+	"date": "18/09",
+	time:"12:00"
+	}
+	]
+	},
+
+"rkhatri":{
+	"spokenTo":
+}
+
+}
+
