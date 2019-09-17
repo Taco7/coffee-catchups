@@ -1,9 +1,13 @@
 {
-	"meetingInfo":[
+	"meetingInfo": [
 		{
-			"employeeId":"adverma",
+			"employeeId": "adverma",
 			"spokenTo": [
-				"rkhatri"
+				{
+					"employeeId": "rkhatri",
+					"date": "12/09",
+					"time": "12:00"
+				}
 			],
 			"upcomingMeeting": [
 				{
@@ -14,12 +18,9 @@
 			]
 		},
 		{
-			"employeeId":"rkhatri",
+			"employeeId": "rkhatri",
 			"spokenTo": [],
 			"upcomingMeeting": []
 		}
 	]
-	
-	
-	
 }
