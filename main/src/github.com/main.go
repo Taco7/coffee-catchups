@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"io/ioutil"
+	"io"
 
 	"github.com/gorilla/mux"
 	"./models"
@@ -102,7 +103,7 @@ func getPastMeetings(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	w.Write([]byte("User not found"))
+	w.Write([]byte("Details not found"))
 }
 func getUpcoming(w http.ResponseWriter, r *http.Request) {
 	
@@ -119,8 +120,45 @@ func getUpcoming(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	w.Write([]byte("User not found"))
+	w.Write([]byte("Details not found"))
 }
 func schedule(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+	organization:="Blackrock"
+	employeeId:="yghonge"
+	name:="yagnesh Ghonge"
+	Team:="data"
+	aboutMe:="i love coffee"
+	location:="NY"
+	email:="yghonge@blk.com"
+
+	var emp models.EmployeeDetails
+	emp = models.EmployeeDetails{EmployeeId: employeeId, Name:name,Team: Team,About: aboutMe,Location: location, Email: email}
+	
+	if (organization == "Blackrock"){
+		f, erro := os.OpenFile("../../resources/blkEmployees.json", os.O_WRONLY, 0666)
+		if erro != nil {
+			fmt.Println(erro)
+		}
+		updateFile(blkEmployee,f)
+	}
+	else{
+		f, erro := os.OpenFile("../../resources/efrontEmployees.json", os.O_WRONLY, 0666)
+		if erro != nil {
+			fmt.Println(erro)
+		}
+		updateFile(efrontEmployees,f)
+	}
+
+	func updateFile(employee models.Employees, file os.FileInfo ){
+		employee.Employee=append(employee.Employee, emp)
+		result, error := json.Marshal(employee)
+		if error != nil {
+			fmt.Println(error)
+		}
+
+		n, err := io.WriteString(f, string(result))
+		if err != nil {
+			fmt.Println(n, err)
+		}
+	}
 }
