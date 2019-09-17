@@ -14,9 +14,11 @@ import (
 )
 
 func main() {
+	loadData()
+	configureRoutes()
+}
 
-	readFiles()
-
+func configureRoutes(){
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", Index)
 	router.HandleFunc("/profile", getProfile).Methods("GET")
@@ -26,17 +28,32 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
-func readFiles(){
-	file, err := os.Open("../../resources/blkEmployees.json")
+func loadData(){
+	fmt.Println("reading blk employees")
+	var blkEmployee models.Employees
+	readFiles(&blkEmployee,"../../resources/blkEmployees.json")
+		fmt.Println("User Type: " + blkEmployee.Employee[0].EmployeeId)
+
+	fmt.Println("reading efront employees")
+	var efrontEmployee models.Employees
+	readFiles(&efrontEmployee,"../../resources/efrontEmployees.json")
+		fmt.Println("User Type: " + efrontEmployee.Employee[0].EmployeeId)
+
+	fmt.Println("reading meeting")
+	var meeting models.Meeting
+	readFiles(&meeting,"../../resources/meeting.json")
+		fmt.Println("User Type: " + meeting.MeetingInfo[0].EmployeeId)
+	
+}
+
+func readFiles(fileObject interface{}, filePath string) interface{} {
+	file, err := os.Open(filePath)
 	if err != nil {
         log.Println(err)
 	}
-	var blkEmployee models.Employees
 	byteValue, _ := ioutil.ReadAll(file)
-	json.Unmarshal(byteValue, &blkEmployee)
-	for i := 0; i < len(blkEmployee.Employee); i++ {
-		fmt.Println("User Type: " + blkEmployee.Employee[i].EmployeeId)
-}
+	json.Unmarshal(byteValue, &fileObject)
+	return fileObject
 		
 	}
 	

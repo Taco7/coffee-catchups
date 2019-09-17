@@ -1,18 +1,25 @@
 {
-	"adverma": {
-		"spokenTo": [
-			"rkhatri"
-		],
-		"upcomingMeeting": [
-			{
-				"empid": "airaj",
-				"date": "18/09",
-				"time": "12:00"
-			}
-		]
-	},
-	"rkhatri": {
-		"spokenTo": [],
-		"upcomingMeeting": []
-	}
+	"meetinginfo":[
+		{
+			"employeeId":"adverma",
+			"spokenTo": [
+				"rkhatri"
+			],
+			"upcomingMeeting": [
+				{
+					"employeeId": "airaj",
+					"date": "18/09",
+					"time": "12:00"
+				}
+			]
+		},
+		{
+			"employeeId":"rkhatri",
+			"spokenTo": [],
+			"upcomingMeeting": []
+		}
+	]
+	
+	
+	
 }
