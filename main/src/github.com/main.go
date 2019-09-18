@@ -8,10 +8,12 @@ import (
 	"os"
 	"io/ioutil"
 	"io"
+	"math/rand"
+	"encoding/json"
 
 	"github.com/gorilla/mux"
 	"./models"
-	"encoding/json"
+	
 )
 
 var blkEmployee models.Employees
@@ -30,7 +32,7 @@ func configureRoutes(){
 	router.HandleFunc("/pastmeetings/{employeeId}", getPastMeetings).Methods("GET")
 	router.HandleFunc("/upcoming/{employeeId}", getUpcoming).Methods("GET")
 	router.HandleFunc("/schedule", schedule).Methods("GET")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8088", router))
 }
 
 func loadData(){
@@ -45,7 +47,7 @@ func loadData(){
 }
 
 func readFiles(fileObject interface{}, filePath string) interface{} {
-	file, err := os.Open(filePath)
+	file, err := os.OpenFile(filePath, os.O_RDONLY, 0666 )
 	if err != nil {
         log.Fatal(err)
 	}
@@ -123,7 +125,7 @@ func getUpcoming(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Details not found"))
 }
 func schedule(w http.ResponseWriter, r *http.Request) {
-	organization:="Efront"
+	organization:="Blackrock"
 	employeeId:="yghonge"
 	name:="yagnesh Ghonge"
 	Team:="data"
@@ -135,51 +137,80 @@ func schedule(w http.ResponseWriter, r *http.Request) {
 	emp = models.EmployeeDetails{EmployeeId: employeeId, Name:name,Team: Team,About: aboutMe,Location: location, Email: email}
 	
 
-if(organization =="Blackrock"){
-    f, erro := os.OpenFile("../../resources/blkEmployees.json", os.O_WRONLY, 0666)
-    if erro != nil {
-      fmt.Println(erro)
-    }
+	if(organization =="Blackrock"){
+		f, erro := os.OpenFile("../../resources/blkEmployees.json", os.O_WRONLY, 0666)
+		if erro != nil {
+		fmt.Println(erro)
+		}
 
-    blkEmployee.Employee=append(blkEmployee.Employee, emp)
-    result, error := json.Marshal(blkEmployee)
-    if error != nil {
-      fmt.Println(error)
-    }
+		blkEmployee.Employee=append(blkEmployee.Employee, emp)
+		result, error := json.Marshal(blkEmployee)
+		if error != nil {
+		fmt.Println(error)
+		}
 
-    n, err := io.WriteString(f, string(result))
-    if err != nil {
-      fmt.Println(n, err)
-    }
+		n, err := io.WriteString(f, string(result))
+		if err != nil {
+		fmt.Println(n, err)
+		}
+		flag,meetingWith:=	scheduleMeeting(emp.EmployeeId, efrontEmployee)
 
+		fmt.Println(meetingWith)
+		if(flag){
+			w.Write([]byte("We will inform you soon once we schedule a meeting"))
+		}else {
+			w.Write([]byte("Meeting set with"+meetingWith))
+		}
+	}else{
+		f, erro := os.OpenFile("../../resources/efrontEmployees.json", os.O_WRONLY, 0666)
+		if erro != nil {
+		fmt.Println(erro)
+		}
 
-    scheduleMeeting(emp.EmployeeId, efrontEmployee)
-}else{
-	f, erro := os.OpenFile("../../resources/efrontEmployees.json", os.O_WRONLY, 0666)
-    if erro != nil {
-      fmt.Println(erro)
-    }
+		efrontEmployee.Employee=append(efrontEmployee.Employee, emp)
+		result, error := json.Marshal(efrontEmployee)
+		if error != nil {
+		fmt.Println(error)
+		}
 
-    efrontEmployee.Employee=append(efrontEmployee.Employee, emp)
-    result, error := json.Marshal(efrontEmployee)
-    if error != nil {
-      fmt.Println(error)
-    }
-
-    n, err := io.WriteString(f, string(result))
-    if err != nil {
-      fmt.Println(n, err)
-    }
-
-
-    scheduleMeeting(emp.EmployeeId, efrontEmployee)
-}
-
-
+		n, err := io.WriteString(f, string(result))
+		if err != nil {
+		fmt.Println(n, err)
+		}
+		flag,meetingWith:=	scheduleMeeting(emp.EmployeeId, blkEmployee)
+		if(flag){
+			w.Write([]byte("We will inform you soon once we schedule a meeting"))
+		}else {
+			w.Write([]byte("Meeting set with "+meetingWith))
+		}
+	}
 	
 }
 
 
-	func scheduleMeeting(employeeId string, Employees models.Employees){
-
+	func scheduleMeeting(employeeId string, Employees models.Employees) (bool,string){
+		meetingWith:=""
+		flag := false
+			for meetingWith=="" {
+				flag := false
+				num:= rand.Intn(len(Employees.Employee))
+				meetingWith=Employees.Employee[num].EmployeeId
+				fmt.Println(meetingWith)
+				for _, v := range meeting.MeetingInfo {
+					if v.EmployeeId == employeeId {
+						for _, p := range v.SpokenTo {
+							if (meetingWith == p.EmployeeId){
+								fmt.Println("matched")
+								flag=true
+								meetingWith=""
+								break
+							}
+						}
+					}
+					if (flag){
+						break
+					}
+				}
+			}
+			return flag,meetingWith
 	}
